@@ -13,9 +13,8 @@ public class RsuMessageApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
-		DateTime dt = new DateTime("2023-03-03T08:00") ;
-		dt.withTime(8, 0, 0, 0);
-		initRsu(dt, 30, "DAYS");
+		DateTime dt = new DateTime("2023-02-07T08:00") ;
+		initRsu(dt, 3, "DAYS");
 
 	}
 
@@ -55,8 +54,14 @@ public class RsuMessageApplication {
 			rsuMessage.setProcessingTimeUnit(TimeUnit.MINUTES);
 		}
 
+		if (rsuMessage.getProcessingTime()>0) { 
+			rsuMessage.setEnableButton(Boolean.FALSE);
+		} else {
+			rsuMessage.setEnableButton(Boolean.TRUE);
+		}
 
-		System.out.println("RSUMessage: "+rsuMessage.toString());
+
+		System.out.println("Now is "+LocalDateTime.now()+"  RSUMessage: "+rsuMessage.toString());
 	}
 
 	static class RSUMessage {
@@ -66,6 +71,7 @@ public class RsuMessageApplication {
 		Long processingTime;
 		TimeUnit processingTimeUnit;
 		String duration;
+		Boolean enableButton;
 
 		public RSUMessage() {
 		}
@@ -106,12 +112,20 @@ public class RsuMessageApplication {
 		}
 		public void setDuration(String duration) {
 			this.duration = duration;
-		}
+		}        
+		public Boolean getEnableButton() {
+            return enableButton;
+        }
+        public void setEnableButton(Boolean enableButton) {
+            this.enableButton = enableButton;
+        }
+
+		
 		@Override
 		public String toString() {
 			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate + ", holidayCount="
 					+ holidayCount + ", processingTime=" + processingTime + ", processingTimeUnit=" + processingTimeUnit
-					+ ", duration=" + duration + "]";
+					+ ", duration=" + duration + ", enableButton=" + enableButton + "]";
 		}
 
 
