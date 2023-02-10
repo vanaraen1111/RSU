@@ -14,7 +14,7 @@ public class RsuMessageApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
 		DateTime dt = new DateTime("2023-02-07T08:00") ;
-		initRsu(dt, 3, "DAYS");
+		initRsu(dt, 20, "MINUTES");
 
 	}
 
