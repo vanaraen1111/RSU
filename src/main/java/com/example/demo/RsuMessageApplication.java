@@ -13,8 +13,8 @@ public class RsuMessageApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
-		DateTime dt = new DateTime("2023-02-10T08:00") ;
-		initRsu(dt, 20, "MINUTES");
+		DateTime dt = new DateTime("2023-02-08T08:00") ;
+		initRsu(dt, 2, "DAYS");
 
 	}
 
@@ -30,6 +30,15 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
+			double holidayCount = 0.5; //could be 1/0.5 also (which denote half day holiday)
+			rsuMessage.setHolidayCount(holidayCount);
+			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
+			while(holidayCount > 0) {
+				boolean halfDay = holidayCount % 1 != 0;
+				LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
+				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
+				//System.out.println("checking");
+			}
 		}
 		else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {
 			targetedEndDateByDuration = startdt.plusHours(duration);
@@ -73,7 +82,7 @@ public class RsuMessageApplication {
 	static class RSUMessage {
 		LocalDateTime startDate;
 		LocalDateTime calculatedEndDate;
-		Integer holidayCount = 0;
+		double holidayCount = 0;
 		String duration;
 		Boolean enableButton;
 		Integer processedTimeInMinutes;
@@ -94,10 +103,10 @@ public class RsuMessageApplication {
 		public void setCalculatedEndDate(LocalDateTime calculatedEndDate) {
 			this.calculatedEndDate = calculatedEndDate;
 		}
-        public Integer getHolidayCount() {
+        public double getHolidayCount() {
 			return holidayCount;
 		}
-		public void setHolidayCount(Integer holidayCount) {
+		public void setHolidayCount(double holidayCount) {
 			this.holidayCount = holidayCount;
 		}
 		
