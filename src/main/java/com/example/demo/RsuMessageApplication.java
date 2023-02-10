@@ -36,6 +36,12 @@ public class RsuMessageApplication {
 			while(holidayCount > 0) {
 				boolean halfDay = holidayCount % 1 != 0;
 				LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
+				//find holiday between (end date + holiday + 1, end date + holiday);
+				//holidayCount = holidayRepository.getHolidayCount(responseInfo.getTargetedEndDateByDuration().toLocalDate().plusDays(1), tempNewDate.toLocalDate());
+				//here the holidayCount is updated based on this query
+				// select coalesce(sum(cast(atc."COUNT" as decimal)), 0)
+				// from "ALZ360"."AZLM_TGE_CALENDAR" atc 
+				// where atc."DATE" between '2022-02-08 00:00:00.000 +0800' and '2022-02-08 00:00:00.000 +0800'
 				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
 				//System.out.println("checking");
 			}
