@@ -13,7 +13,7 @@ public class RsuMessageApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
-		DateTime dt = new DateTime("2023-02-07T08:00") ;
+		DateTime dt = new DateTime("2023-02-10T08:00") ;
 		initRsu(dt, 20, "MINUTES");
 
 	}
@@ -38,42 +38,49 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusMinutes(duration);
 		}
 		rsuMessage.setCalculatedEndDate(targetedEndDateByDuration);
-
-		Duration processingTime = Duration.between(LocalDateTime.now(), rsuMessage.getCalculatedEndDate());
-
-		if (timeUnit.equalsIgnoreCase(TimeUnit.DAYS.name())) {
-			rsuMessage.setProcessingTime(processingTime.toDays());
-			rsuMessage.setProcessingTimeUnit(TimeUnit.DAYS);
-		}
-		else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {
-			rsuMessage.setProcessingTime(processingTime.toHours());
-			rsuMessage.setProcessingTimeUnit(TimeUnit.HOURS);
-		}
-		else if (timeUnit.equalsIgnoreCase(TimeUnit.MINUTES.name())) {
-			rsuMessage.setProcessingTime(processingTime.toMinutes());
-			rsuMessage.setProcessingTimeUnit(TimeUnit.MINUTES);
-		}
-
-		if (rsuMessage.getProcessingTime()>0) { 
+		rsuMessage.setProcessedTimeInMinutes(calculateProcessingTimeInMinutes(rsuMessage.getCalculatedEndDate()));
+		if (rsuMessage.getProcessedTimeInMinutes()>0) { 
 			rsuMessage.setEnableButton(Boolean.FALSE);
 		} else {
 			rsuMessage.setEnableButton(Boolean.TRUE);
 		}
-
+		//Conversion to days / hours / minutes for message displayed
+		rsuMessage.setProcessingTimeMessage(minutesToDaysHoursMinutes(rsuMessage.getProcessedTimeInMinutes()));
 
 		System.out.println("Now is "+LocalDateTime.now()+"  RSUMessage: "+rsuMessage.toString());
+	}
+
+	static String minutesToDaysHoursMinutes(int time) {
+		if (time > 0) {
+			Duration d = Duration.ofMinutes(time);
+			long days = d.toDays();
+			long hours = d.toHours() % 24;
+			long minutes = d.toMinutes() % 60;
+			return String.format("Please allow processing time of %d Day(s) %d Hour(s) %d Minute(s)", days, hours, minutes);
+		} else {
+			return ""; // no message as button is enabled at this point
+		}
+
+    }
+
+	static Integer calculateProcessingTimeInMinutes (LocalDateTime endDate) {
+		Duration processingTime = Duration.between(LocalDateTime.now(), endDate);
+
+		//check difference in minutes
+		return Math.toIntExact(processingTime.toMinutes());
 	}
 
 	static class RSUMessage {
 		LocalDateTime startDate;
 		LocalDateTime calculatedEndDate;
 		Integer holidayCount = 0;
-		Long processingTime;
-		TimeUnit processingTimeUnit;
 		String duration;
 		Boolean enableButton;
+		Integer processedTimeInMinutes;
+		String processingTimeMessage;
 
 		public RSUMessage() {
+			//
 		}
 		public LocalDateTime getStartDate() {
 			return startDate;
@@ -94,19 +101,6 @@ public class RsuMessageApplication {
 			this.holidayCount = holidayCount;
 		}
 		
-		public Long getProcessingTime() {
-			return processingTime;
-		}
-		public void setProcessingTime(Long processingTime) {
-			this.processingTime = processingTime;
-		}
-
-		public TimeUnit getProcessingTimeUnit() {
-			return processingTimeUnit;
-		}
-		public void setProcessingTimeUnit(TimeUnit processingTimeUnit) {
-			this.processingTimeUnit = processingTimeUnit;
-		}
 		public String getDuration() {
 			return duration;
 		}
@@ -120,14 +114,26 @@ public class RsuMessageApplication {
             this.enableButton = enableButton;
         }
 
+		public Integer getProcessedTimeInMinutes() {
+			return processedTimeInMinutes;
+		}
+		public void setProcessedTimeInMinutes(Integer processedTimeInMinutes) {
+			this.processedTimeInMinutes = processedTimeInMinutes;
+		}
+		public String getProcessingTimeMessage() {
+			return processingTimeMessage;
+		}
+		public void setProcessingTimeMessage(String processingTimeMessage) {
+			this.processingTimeMessage = processingTimeMessage;
+		}
 		
 		@Override
 		public String toString() {
 			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate + ", holidayCount="
-					+ holidayCount + ", processingTime=" + processingTime + ", processingTimeUnit=" + processingTimeUnit
-					+ ", duration=" + duration + ", enableButton=" + enableButton + "]";
+					+ holidayCount + ", duration=" + duration + ", enableButton=" + enableButton
+					+ ", processedTimeInMinutes=" + processedTimeInMinutes + ", processingTimeMessage="
+					+ processingTimeMessage + "]";
 		}
-
 
 	}
 
