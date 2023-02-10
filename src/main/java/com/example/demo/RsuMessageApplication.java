@@ -30,7 +30,7 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
-			double holidayCount = 0.5; //could be 0/1/0.5 also (which denote half day holiday)
+			double holidayCount = 0; //could be 0/1/0.5 also (which denote half day holiday)
 			//currently putting this value more than 0 will cause infinite loop
 			rsuMessage.setHolidayCount(holidayCount);
 			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
