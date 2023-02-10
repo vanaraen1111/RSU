@@ -30,14 +30,15 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
-			double holidayCount = 1; //could be 0.5 also (which denote half day holiday)
+			double holidayCount = 0.5; //could be 1/0.5 also (which denote half day holiday)
 			rsuMessage.setHolidayCount(holidayCount);
 			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
 			while(holidayCount > 0) {
-                boolean halfDay = holidayCount % 1 != 0;
-                LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
+				boolean halfDay = holidayCount % 1 != 0;
+				LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
 				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
-            }
+				//System.out.println("checking");
+			}
 		}
 		else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {
 			targetedEndDateByDuration = startdt.plusHours(duration);
