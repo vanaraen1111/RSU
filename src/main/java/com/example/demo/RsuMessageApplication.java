@@ -30,6 +30,14 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
+			double holidayCount = 1; //could be 0.5 also (which denote half day holiday)
+			rsuMessage.setHolidayCount(holidayCount);
+			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
+			while(holidayCount > 0) {
+                boolean halfDay = holidayCount % 1 != 0;
+                LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
+				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
+            }
 		}
 		else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {
 			targetedEndDateByDuration = startdt.plusHours(duration);
@@ -67,13 +75,14 @@ public class RsuMessageApplication {
 	static class RSUMessage {
 		LocalDateTime startDate;
 		LocalDateTime calculatedEndDate;
-		Integer holidayCount = 0;
+		double holidayCount = 0;
 		Long processingTime;
 		TimeUnit processingTimeUnit;
 		String duration;
 		Boolean enableButton;
 
 		public RSUMessage() {
+			//
 		}
 		public LocalDateTime getStartDate() {
 			return startDate;
@@ -87,10 +96,10 @@ public class RsuMessageApplication {
 		public void setCalculatedEndDate(LocalDateTime calculatedEndDate) {
 			this.calculatedEndDate = calculatedEndDate;
 		}
-        public Integer getHolidayCount() {
+        public double getHolidayCount() {
 			return holidayCount;
 		}
-		public void setHolidayCount(Integer holidayCount) {
+		public void setHolidayCount(double holidayCount) {
 			this.holidayCount = holidayCount;
 		}
 		
