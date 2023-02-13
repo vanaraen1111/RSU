@@ -6,5 +6,5 @@
 ```
 ### View table:
 ```sh
-SELECT * FROM "Cities"; //don't forget semicolon, superimportant!
+SELECT * FROM "Cities"; //don't forget semicolon and case, superimportant!
 ```
