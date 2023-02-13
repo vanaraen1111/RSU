@@ -7,12 +7,12 @@ image:
   file: .gitpod.Dockerfile
   
 tasks:
+  - name: Postgres Run
+    init: psql -h localhost -d postgres
   - name: Spring Boot Run
     init: mvn clean package -DskipTests
     before: 
       mvn spring-boot:run
-  - name: Postgres Run
-    init: psql -h localhost -d postgres
   # - name: Postgres Status Check
   #   command: pg_ctl status
 
