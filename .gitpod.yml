@@ -10,4 +10,7 @@ tasks:
     before: 
       mvn spring-boot:run
 
+  # - name: Postgres Status Check
+  #   command: pg_ctl status
+
 
