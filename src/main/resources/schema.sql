@@ -7,6 +7,6 @@ CREATE TABLE public."Cities"("Id" serial PRIMARY KEY, "Name" VARCHAR(255), "Popu
 CREATE TABLE public."AZLM_TGE_CALENDAR" (
 	"CALENDAR_ID" serial PRIMARY KEY,
 	"DATE" timestamptz(6) NULL,
-	"COUNT" numeric NUL
+	"COUNT" numeric NULL
 )
 ;
