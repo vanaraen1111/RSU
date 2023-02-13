@@ -2,23 +2,29 @@ package com.example.demo;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.example.demo.dao.HolidayRepository;
+
 @SpringBootApplication
 public class RsuMessageApplication {
+	static HolidayRepository holidayRepository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
 		DateTime dt = new DateTime("2023-02-07T08:00") ;
-		initRsu(dt, 20, "DAYS", 0.5); // holiday could be 1/0.5 also (which denote half day holiday)
-
+		initRsu(dt, 20, "DAYS"); 
 	}
 
-	static void initRsu (DateTime startDate, Integer duration, String timeUnit, double holidayCount) {
+	static void initRsu (DateTime startDate, Integer duration, String timeUnit) {
+		
 		RSUMessage rsuMessage = new RSUMessage();
 		rsuMessage.setDuration(new StringBuilder(duration.toString()).append(" ").append(timeUnit).toString());
 		LocalDateTime startdt = startDate.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -26,25 +32,21 @@ public class RsuMessageApplication {
 		rsuMessage.setStartDate(startdt);
 
 		LocalDateTime targetedEndDateByDuration = null;
+		double holidayCount = 0;
 		if (timeUnit.equalsIgnoreCase(TimeUnit.DAYS.name())) {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
+			LocalDateTime tempDateTime = startdt.with(LocalTime.of(0, 0)).plusDays(duration);
+			holidayCount = holidayRepository.getHolidayCount(startdt.toLocalDate(), tempDateTime.toLocalDate());
 			rsuMessage.setHolidayCount(holidayCount);
-			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
 			while(holidayCount > 0) {
 				boolean halfDay = holidayCount % 1 != 0;
 				LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
 				//find holiday between (end date + holiday + 1, end date + holiday);
-				//holidayCount = holidayRepository.getHolidayCount(responseInfo.getTargetedEndDateByDuration().toLocalDate().plusDays(1), tempNewDate.toLocalDate());
-				//here the holidayCount is updated based on this query
-				// select coalesce(sum(cast(atc."COUNT" as decimal)), 0)
-				// from "ALZ360"."AZLM_TGE_CALENDAR" atc 
-				// where atc."DATE" between '2022-02-08 00:00:00.000 +0800' and '2022-02-08 00:00:00.000 +0800'
-				holidayCount -=1.0; //temporary code to emulate the 
-				//find holiday between (end date + holiday + 1, end date + holiday);
+				holidayCount = holidayRepository.getHolidayCount(targetedEndDateByDuration.toLocalDate().plusDays(1), tempNewDate.toLocalDate());
 				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
-				//System.out.println("checking");
+
 			}
 		}
 		else if (timeUnit.equalsIgnoreCase(TimeUnit.HOURS.name())) {

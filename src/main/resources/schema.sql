@@ -4,7 +4,7 @@ CREATE TABLE public."Cities"("Id" serial PRIMARY KEY, "Name" VARCHAR(255), "Popu
 DROP TABLE IF EXISTS public."Cities";
 CREATE TABLE public."Cities"("Id" serial PRIMARY KEY, "Name" VARCHAR(255), "Population" integer);
 
-CREATE TABLE public."AZLM_TGE_CALENDAR" (
+CREATE TABLE public."CALENDAR" (
 	"CALENDAR_ID" serial PRIMARY KEY,
 	"DATE" timestamptz(6) NULL,
 	"COUNT" numeric NULL
