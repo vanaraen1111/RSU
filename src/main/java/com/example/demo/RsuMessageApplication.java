@@ -144,6 +144,18 @@ public class RsuMessageApplication {
 		public void setHolidayCount(double holidayCount) {
 			this.holidayCount = holidayCount;
 		}
+		public Integer getProcessedTimeInMinutes() {
+			return processedTimeInMinutes;
+		}
+		public void setProcessedTimeInMinutes(Integer processedTimeInMinutes) {
+			this.processedTimeInMinutes = processedTimeInMinutes;
+		}
+		public String getProcessingTimeMessage() {
+			return processingTimeMessage;
+		}
+		public void setProcessingTimeMessage(String processingTimeMessage) {
+			this.processingTimeMessage = processingTimeMessage;
+		}
 		@Override
 		public String toString() {
 			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate + ", holidayCount="
