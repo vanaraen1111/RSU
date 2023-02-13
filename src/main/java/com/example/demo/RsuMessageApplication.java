@@ -42,6 +42,8 @@ public class RsuMessageApplication {
 				// select coalesce(sum(cast(atc."COUNT" as decimal)), 0)
 				// from "ALZ360"."AZLM_TGE_CALENDAR" atc 
 				// where atc."DATE" between '2022-02-08 00:00:00.000 +0800' and '2022-02-08 00:00:00.000 +0800'
+				holidayCount --; //temporary code to emulate the 
+				//find holiday between (end date + holiday + 1, end date + holiday);
 				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
 				//System.out.println("checking");
 			}
