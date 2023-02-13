@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -39,7 +38,6 @@ public class RsuMessageApplication {
 			//holiday count here, will affect targetedEndDateByDuration
 			LocalDateTime tempDateTime = startdt.with(LocalTime.of(0, 0)).plusDays(duration);
 			holidayCount = holidayRepository.getHolidayCount(startdt.toLocalDate(), tempDateTime.toLocalDate());
-			rsuMessage.setHolidayCount(holidayCount);
 			while(holidayCount > 0) {
 				boolean halfDay = holidayCount % 1 != 0;
 				LocalDateTime tempNewDate = targetedEndDateByDuration.plusDays((int)holidayCount);
@@ -85,7 +83,6 @@ public class RsuMessageApplication {
 	static class RSUMessage {
 		LocalDateTime startDate;
 		LocalDateTime calculatedEndDate;
-		double holidayCount;
 		Long processingTime;
 		TimeUnit processingTimeUnit;
 		String duration;
@@ -132,16 +129,11 @@ public class RsuMessageApplication {
         public void setEnableButton(Boolean enableButton) {
             this.enableButton = enableButton;
         }
-		public double getHolidayCount() {
-			return holidayCount;
-		}
-		public void setHolidayCount(double holidayCount) {
-			this.holidayCount = holidayCount;
-		}
+
 		@Override
 		public String toString() {
-			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate + ", holidayCount="
-					+ holidayCount + ", processingTime=" + processingTime + ", processingTimeUnit=" + processingTimeUnit
+			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate
+					+ ", processingTime=" + processingTime + ", processingTimeUnit=" + processingTimeUnit
 					+ ", duration=" + duration + ", enableButton=" + enableButton + "]";
 		}
 
