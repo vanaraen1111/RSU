@@ -13,12 +13,12 @@ public class RsuMessageApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RsuMessageApplication.class, args);
-		DateTime dt = new DateTime("2023-02-08T08:00") ;
-		initRsu(dt, 2, "DAYS");
+		DateTime dt = new DateTime("2023-02-07T08:00") ;
+		initRsu(dt, 20, "DAYS", 0.5); // holiday could be 1/0.5 also (which denote half day holiday)
 
 	}
 
-	static void initRsu (DateTime startDate, Integer duration, String timeUnit) {
+	static void initRsu (DateTime startDate, Integer duration, String timeUnit, double holidayCount) {
 		RSUMessage rsuMessage = new RSUMessage();
 		rsuMessage.setDuration(new StringBuilder(duration.toString()).append(" ").append(timeUnit).toString());
 		LocalDateTime startdt = startDate.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -30,7 +30,6 @@ public class RsuMessageApplication {
 			targetedEndDateByDuration = startdt.plusDays(duration);
 
 			//holiday count here, will affect targetedEndDateByDuration
-			double holidayCount = 0.5; //could be 1/0.5 also (which denote half day holiday)
 			rsuMessage.setHolidayCount(holidayCount);
 			//holidayCount = holidayRepository.getHolidayCount(responseInfo.getStartDate().toLocalDate(), tempDateTime.toLocalDate());
 			while(holidayCount > 0) {
@@ -42,7 +41,7 @@ public class RsuMessageApplication {
 				// select coalesce(sum(cast(atc."COUNT" as decimal)), 0)
 				// from "ALZ360"."AZLM_TGE_CALENDAR" atc 
 				// where atc."DATE" between '2022-02-08 00:00:00.000 +0800' and '2022-02-08 00:00:00.000 +0800'
-				holidayCount --; //temporary code to emulate the 
+				holidayCount -=1.0; //temporary code to emulate the 
 				//find holiday between (end date + holiday + 1, end date + holiday);
 				targetedEndDateByDuration = halfDay ? tempNewDate.plusHours(12) : tempNewDate;
 				//System.out.println("checking");
@@ -90,7 +89,9 @@ public class RsuMessageApplication {
 	static class RSUMessage {
 		LocalDateTime startDate;
 		LocalDateTime calculatedEndDate;
-		double holidayCount = 0;
+		double holidayCount;
+		Long processingTime;
+		TimeUnit processingTimeUnit;
 		String duration;
 		Boolean enableButton;
 		Integer processedTimeInMinutes;
@@ -111,13 +112,20 @@ public class RsuMessageApplication {
 		public void setCalculatedEndDate(LocalDateTime calculatedEndDate) {
 			this.calculatedEndDate = calculatedEndDate;
 		}
-        public double getHolidayCount() {
-			return holidayCount;
+
+		public Long getProcessingTime() {
+			return processingTime;
 		}
-		public void setHolidayCount(double holidayCount) {
-			this.holidayCount = holidayCount;
+		public void setProcessingTime(Long processingTime) {
+			this.processingTime = processingTime;
 		}
-		
+
+		public TimeUnit getProcessingTimeUnit() {
+			return processingTimeUnit;
+		}
+		public void setProcessingTimeUnit(TimeUnit processingTimeUnit) {
+			this.processingTimeUnit = processingTimeUnit;
+		}
 		public String getDuration() {
 			return duration;
 		}
@@ -130,20 +138,12 @@ public class RsuMessageApplication {
         public void setEnableButton(Boolean enableButton) {
             this.enableButton = enableButton;
         }
-
-		public Integer getProcessedTimeInMinutes() {
-			return processedTimeInMinutes;
+		public double getHolidayCount() {
+			return holidayCount;
 		}
-		public void setProcessedTimeInMinutes(Integer processedTimeInMinutes) {
-			this.processedTimeInMinutes = processedTimeInMinutes;
+		public void setHolidayCount(double holidayCount) {
+			this.holidayCount = holidayCount;
 		}
-		public String getProcessingTimeMessage() {
-			return processingTimeMessage;
-		}
-		public void setProcessingTimeMessage(String processingTimeMessage) {
-			this.processingTimeMessage = processingTimeMessage;
-		}
-		
 		@Override
 		public String toString() {
 			return "RSUMessage [startDate=" + startDate + ", calculatedEndDate=" + calculatedEndDate + ", holidayCount="
