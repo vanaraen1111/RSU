@@ -13,8 +13,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception {
-        //rsuServices.initRSU( new DateTime("2023-02-07T08:00"), 20, "DAYS");
+        rsuServices.initRSU(new DateTime("2023-02-07T08:00"), 20, "DAYS");
        // System.out.println("Id - 1 count:" + rsuServices.retrieveCountByCalendarId(1));
-       System.out.println("Id - null count:" + rsuServices.retrieveCountByCalendarId(null));
+       //System.out.println("Id - null count:" + rsuServices.retrieveCountByCalendarId(null));
     }
 }
