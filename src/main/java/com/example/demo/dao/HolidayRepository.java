@@ -19,4 +19,9 @@ public interface HolidayRepository extends CrudRepository<Holiday, String>{
     + "from \"CALENDAR\" atc "
     + "where atc.\"CALENDAR_ID\" =:calendarId ", nativeQuery = true)
     Double getHolidayCountByCalendarId(@Param("calendarId") Integer calendarId);
+
+    @Query(value = "select atc.\"COUNT\" "
+    + "from \"CALENDAR\" atc "
+    + "where atc.\"CALENDAR_ID\" =:calendarId ", nativeQuery = true)
+    String retrieveCountByTemporaryColumn(@Param("temporaryColumn") String temporaryColumn);
 }

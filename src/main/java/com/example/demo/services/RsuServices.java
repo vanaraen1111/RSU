@@ -77,4 +77,8 @@ public class RsuServices {
 	public Double retrieveCountByCalendarId (Integer calendarId) {
 		return holidayRepository.getHolidayCountByCalendarId(calendarId);
 	}
+
+	public String  retrieveCountByTemporaryColumn (String tempColumn) {
+		return holidayRepository.retrieveCountByTemporaryColumn (tempColumn);
+	}
 }
