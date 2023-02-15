@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class Holiday {
     @Id
     @Column(name = "`CALENDAR_ID`")
-    private Integer id;
+    private int id;
 
     @Column(name = "`DATE`")
     private String name;
@@ -18,11 +18,15 @@ public class Holiday {
     @Column(name = "`COUNT`")
     private String currency;
 
-    public Integer getId() {
+    @Column(name = "`TEMPCOLUMN`")
+    private String tempColumn;
+    
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -40,6 +44,14 @@ public class Holiday {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getTempColumn() {
+        return tempColumn;
+    }
+
+    public void setTempColumn(String tempColumn) {
+        this.tempColumn = tempColumn;
     }
 
     @Override

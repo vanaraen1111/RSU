@@ -17,7 +17,7 @@ public class RsuServices {
     HolidayRepository holidayRepository;
 
 
-    public void initRSU (DateTime startDate, Integer duration, String timeUnit){
+    public void initRSU (DateTime startDate, Integer duration, String timeUnit) {
 
 		RSUMessage rsuMessage = new RSUMessage();
 		rsuMessage.setDuration(new StringBuilder(duration.toString()).append(" ").append(timeUnit).toString());
@@ -73,4 +73,8 @@ public class RsuServices {
 
         System.out.println("Now is "+LocalDateTime.now()+"  RSUMessage: "+rsuMessage.toString());
 }
+
+	public Double retrieveCountByCalendarId (Integer calendarId) {
+		return holidayRepository.getHolidayCountByCalendarId(calendarId);
+	}
 }

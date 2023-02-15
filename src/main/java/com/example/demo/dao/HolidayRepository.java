@@ -14,4 +14,9 @@ public interface HolidayRepository extends CrudRepository<Holiday, String>{
     + "from \"CALENDAR\" atc "
     + "where atc.\"DATE\" between :startDate and :endDate", nativeQuery = true)
     double getHolidayCount(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query(value = "select atc.\"COUNT\" "
+    + "from \"CALENDAR\" atc "
+    + "where atc.\"CALENDAR_ID\" =:calendarId ", nativeQuery = true)
+    Double getHolidayCountByCalendarId(@Param("calendarId") Integer calendarId);
 }
