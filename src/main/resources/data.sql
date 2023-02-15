@@ -8,7 +8,7 @@ INSERT INTO public."Cities"("Name", "Population") VALUES('Edinburgh', 464000);
 INSERT INTO public."Cities"("Name", "Population") VALUES('Berlin', 3671000);
 
 
-INSERT INTO public."CALENDAR" ("DATE","COUNT") VALUES
+INSERT INTO public."CALENDAR" ("DATE","COUNT", "TEMPCOLUMN") VALUES
 	 ('2021-03-02 00:00:00+08',1, "abc"),
 	 ('2021-03-02 00:00:00+08',1, "abcd"),
 	 ('2022-02-08 00:00:00+08',0.5,"abcde"),
